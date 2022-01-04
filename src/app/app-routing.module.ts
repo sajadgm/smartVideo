@@ -1,9 +1,8 @@
-import { AppComponent } from './app.component';
+import { VideoplaylistComponent } from './videoplaylist/videoplaylist.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { VideoToolbarComponent } from './video-toolbar/video-toolbar.component';
 
-const routes: Routes = [{ path: '', component: VideoToolbarComponent }];
+const routes: Routes = [{ path: '', component: VideoplaylistComponent }];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

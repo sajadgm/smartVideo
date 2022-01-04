@@ -8,19 +8,18 @@ import { VgCoreModule } from '@videogular/ngx-videogular/core';
 import { VgControlsModule } from '@videogular/ngx-videogular/controls';
 import { VgOverlayPlayModule } from '@videogular/ngx-videogular/overlay-play';
 import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
-import { SimpleplayerComponent } from './simpleplayer/simpleplayer.component';
 import { VideoplaylistComponent } from './videoplaylist/videoplaylist.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { VideoToolbarComponent } from './video-toolbar/video-toolbar.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { VideoListService } from './services/video-list.service';
 
 @NgModule({
-  declarations: [AppComponent, SimpleplayerComponent, VideoplaylistComponent, VideoToolbarComponent],
+  declarations: [AppComponent, VideoplaylistComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -36,7 +35,7 @@ import { MatListModule } from '@angular/material/list';
     MatIconModule,
     MatListModule,
   ],
-  providers: [],
+  providers: [VideoListService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,4 +1,9 @@
+import { IVideoList } from './../interfaces/videoList.interfaces';
 import { Component, OnInit } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+import { VideoListService } from '../services/video-list.service';
 
 @Component({
   selector: 'app-videoplaylist',
@@ -6,13 +11,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./videoplaylist.component.scss'],
 })
 export class VideoplaylistComponent implements OnInit {
-  videoItems = [
+  videoItems: IVideoList[] = [
     {
+      id: 1,
       name: 'First Video',
       src: 'http://static.videogular.com/assets/videos/big_buck_bunny_720p_h264.mov',
       type: 'video/mp4',
     },
     {
+      id: 2,
       name: 'Second Video',
       src: 'http://static.videogular.com/assets/videos/videogular.mp4',
       type: 'video/mp4',
@@ -21,18 +28,36 @@ export class VideoplaylistComponent implements OnInit {
 
   activeIndex = 0;
   currentVideo = this.videoItems[this.activeIndex];
-  data: any;
 
-  constructor() {}
+  //داده از نوع مدیا پلیر
+  data!: any;
 
-  ngOnInit(): void {}
+  //toolbar
+  isHandset$: Observable<boolean> = this.breakpointObserver
+    .observe(Breakpoints.Handset)
+    .pipe(
+      map((result) => result.matches),
+      shareReplay()
+    );
+  //
+  constructor(
+    private breakpointObserver: BreakpointObserver, //toolbar
+    private _videoList: VideoListService
+  ) {}
+
+  ngOnInit(): void {
+    // this.videoItems = thiss._videoList.videos;
+  }
 
   videoPlayerInit(data: any) {
     this.data = data;
 
+    //show video
     this.data
       .getDefaultMedia()
       .subscriptions.loadedMetadata.subscribe(this.initVdo.bind(this));
+
+    //show next video
     this.data
       .getDefaultMedia()
       .subscriptions.ended.subscribe(this.nextVideo.bind(this));

@@ -11,13 +11,18 @@ export class VideoListService {
       name: 'First Video',
       src: 'http://static.videogular.com/assets/videos/big_buck_bunny_720p_h264.mov',
       type: 'video/mp4',
+      visited: false,
+      completed: false,
     },
     {
       id: 2,
       name: 'Second Video',
       src: 'http://static.videogular.com/assets/videos/videogular.mp4',
       type: 'video/mp4',
+      visited: false,
+      completed: false,
     },
   ];
+
   constructor() {}
 }

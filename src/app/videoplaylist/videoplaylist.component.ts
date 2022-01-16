@@ -1,7 +1,7 @@
 import { IVideoList } from './../interfaces/videoList.interfaces';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { VideoListService } from '../services/video-list.service';
 
@@ -10,25 +10,13 @@ import { VideoListService } from '../services/video-list.service';
   templateUrl: './videoplaylist.component.html',
   styleUrls: ['./videoplaylist.component.scss'],
 })
-export class VideoplaylistComponent implements OnInit {
-  videoItems: IVideoList[] = [
-    {
-      id: 1,
-      name: 'First Video',
-      src: 'http://static.videogular.com/assets/videos/big_buck_bunny_720p_h264.mov',
-      type: 'video/mp4',
-    },
-    {
-      id: 2,
-      name: 'Second Video',
-      src: 'http://static.videogular.com/assets/videos/videogular.mp4',
-      type: 'video/mp4',
-    },
-  ];
+export class VideoplaylistComponent implements OnInit, AfterViewInit {
+  videoItems$!: Observable<IVideoList[]>;
 
   activeIndex = 0;
-  currentVideo = this.videoItems[this.activeIndex];
+  currentVideo = this._videoList.videos[this.activeIndex];
 
+  seenVideoNumbers: number = 1;
   //داده از نوع مدیا پلیر
   data!: any;
 
@@ -46,8 +34,19 @@ export class VideoplaylistComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.videoItems = thiss._videoList.videos;
+    //give video list
+    // this.videoItems = this._videoList.videos;
+
+    this.videoItems$ = new Observable<IVideoList[]>((data) => {
+      data.next(this._videoList.videos);
+    });
+    // const $videoItems = new Observable<IVideoList[]>((data) =>
+    // );
+
+    // $videoItems.subscribe((d) => console.log(d));
   }
+
+  ngAfterViewInit(): void {}
 
   videoPlayerInit(data: any) {
     this.data = data;
@@ -61,24 +60,48 @@ export class VideoplaylistComponent implements OnInit {
     this.data
       .getDefaultMedia()
       .subscriptions.ended.subscribe(this.nextVideo.bind(this));
+
+    // this.data.getDefaultMedia().subscriptions.timeUpdate.subscribe((data) => {
+    //   let currentTime = data.srcElement.currentTime;
+    // });
   }
 
   nextVideo() {
     this.activeIndex++;
 
-    if (this.activeIndex === this.videoItems.length) {
+    if (this.activeIndex === this._videoList.videos.length) {
       this.activeIndex = 0;
     }
 
-    this.currentVideo = this.videoItems[this.activeIndex];
+    this.currentVideo = this._videoList.videos[this.activeIndex];
   }
 
   initVdo() {
     this.data.play();
+
+    //save which one of videos seen now index
+    // if (this.data) {
+    //   this._videoList.videos[this.activeIndex].completed = true;
+    // }
   }
 
   startPlaylistVdo(item: any, index: number) {
     this.activeIndex = index;
     this.currentVideo = item;
   }
+
+  //video duration
+  onMetadata(e: Event, media: any) {
+    // console.log('metadata: ', media);
+    // if (media.id == this.activeIndex + 1) {
+    //   let du = Math.floor((10 / 100) * Math.floor(media.duration)) * 1000;
+    //   console.log(du);
+    //   setInterval(() => {
+    //     console.log(du);
+    //   }, du);
+    // }
+  }
+}
+function next(next: any, arg1: (data: IVideoList[]) => void) {
+  throw new Error('Function not implemented.');
 }

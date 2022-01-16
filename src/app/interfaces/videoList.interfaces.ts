@@ -3,4 +3,6 @@ export interface IVideoList {
   name: string;
   src: string;
   type: string;
+  visited: boolean;
+  completed: boolean;
 }

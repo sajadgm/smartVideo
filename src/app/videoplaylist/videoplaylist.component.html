@@ -7,7 +7,7 @@
       <mat-toolbar>Menu</mat-toolbar>
       <mat-nav-list>
 
-        <div *ngFor="let vdo of videoItems; let $index = index"
+        <div *ngFor="let vdo of videoItems$ | async; let $index = index"
               (click)="startPlaylistVdo(vdo, $index)"
               [class.selected]="vdo === currentVideo" style="margin: 0.5rem;" >
           <div style="display: flex;flex-direction: row; height: 100px;">
@@ -15,10 +15,11 @@
               style="width: 40%;height: 100%;;text-align: right; padding-right: .2rem;word-wrap: break-word;overflow: hidden;">
               <h4>{{vdo.id}}</h4>
             </div>
-            <div  style="width: 50%;height: 100%;cursor: pointer;">
+            <div  style="width: 50%;height: 100%;cursor: pointer;position: relative;">
               <vg-player>
                 <vg-controls>
-                  <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+                  <vg-time-display vgProperty="total" vgFormat="mm:ss" ></vg-time-display>
+                  <mat-icon *ngIf="vdo.completed" title="seen" style="position: absolute;bottom: 0;right: 0;z-index: 10;color: greenyellow;">check_circle_outline</mat-icon>
                 </vg-controls>
                 <video [vgMedia]="$any(media)" #media [id]="vdo.id" crossorigin>
                   <source [src]="vdo.src" [type]="vdo.type">
@@ -27,6 +28,8 @@
             </div>
           </div>
         </div>
+        <hr/>
+        <h5 h style="text-align: right;margin: 0.5rem;">{{activeIndex+1}}/{{(videoItems$ | async)?.length}}</h5>
 
 <!--
         <a mat-list-item href="#">Link 1</a>
@@ -52,32 +55,27 @@
           </button>
           <span>smart-video</span>
         </mat-toolbar>
+
         <!-- Add Content Here -->
         <div class="content" role="main">
-          <vg-player (onPlayerReady)="videoPlayerInit($event)">
-            <vg-overlay-play></vg-overlay-play>
+          <vg-player (onPlayerReady)="videoPlayerInit($event)" >
+            <vg-overlay-play ></vg-overlay-play>
             <vg-buffering></vg-buffering>
-
             <vg-scrub-bar>
               <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
               <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
             </vg-scrub-bar>
-
             <vg-controls>
               <vg-play-pause></vg-play-pause>
               <vg-playback-button></vg-playback-button>
-
-              <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
-
+              <vg-time-display onplay="" vgProperty="current" vgFormat="mm:ss"></vg-time-display>
               <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
-
               <vg-mute></vg-mute>
               <vg-volume></vg-volume>
-
               <vg-fullscreen></vg-fullscreen>
             </vg-controls>
 
-            <video #media [vgMedia]="$any(media)" [src]="currentVideo.src" id="singleVideo" preload="auto" crossorigin>
+            <video #media [vgMedia]="$any(media)"  [src]="currentVideo.src" id="singleVideo" preload="auto" crossorigin>
             </video>
           </vg-player>
           </div>
